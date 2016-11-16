@@ -9,12 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using NadekoBot.Services;
 using NadekoBot.Attributes;
-using System.Text.RegularExpressions;
 using Discord.WebSocket;
-using NadekoBot.Services.Database;
 using NadekoBot.Services.Database.Models;
 using System.Net.Http;
-using ImageProcessorCore;
 using System.IO;
 using static NadekoBot.Modules.Permissions.Permissions;
 using System.Collections.Concurrent;
@@ -88,8 +85,12 @@ namespace NadekoBot.Modules.Administration
 
                 foreach (var toOverwrite in guild.GetTextChannels())
                 {
-                    await toOverwrite.AddPermissionOverwriteAsync(muteRole, new OverwritePermissions(sendMessages: PermValue.Deny, attachFiles: PermValue.Deny))
-                            .ConfigureAwait(false);
+                    try
+                    {
+                        await toOverwrite.AddPermissionOverwriteAsync(muteRole, new OverwritePermissions(sendMessages: PermValue.Deny, attachFiles: PermValue.Deny))
+                                .ConfigureAwait(false);
+                    }
+                    catch { }
                     await Task.Delay(200).ConfigureAwait(false);
                 }
             }
@@ -311,7 +312,8 @@ namespace NadekoBot.Modules.Administration
 
         [NadekoCommand, Usage, Description, Aliases]
         [RequireContext(ContextType.Guild)]
-        [RequirePermission(GuildPermission.BanMembers)]
+        [RequirePermission(GuildPermission.KickMembers)]
+        [RequirePermission(GuildPermission.ManageMessages)]
         public async Task Softban(IUserMessage umsg, IGuildUser user, [Remainder] string msg = null)
         {
             var channel = (ITextChannel)umsg.Channel;

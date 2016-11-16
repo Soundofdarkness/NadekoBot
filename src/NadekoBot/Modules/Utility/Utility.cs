@@ -8,11 +8,8 @@ using NadekoBot.Services;
 using System.Text;
 using NadekoBot.Extensions;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using System.Reflection;
 using Discord.WebSocket;
-using System.Net.Http;
-using System.IO;
 
 namespace NadekoBot.Modules.Utility
 {
@@ -168,8 +165,6 @@ namespace NadekoBot.Modules.Utility
         public async Task Showemojis(IUserMessage msg, [Remainder] string emojis)
         {
             var matches = emojiFinder.Matches(emojis);
-
-
 
             var result = string.Join("\n", matches.Cast<Match>()
                                                   .Select(m => $"`Name:` {m.Groups["name"]} `Link:` http://discordapp.com/api/emojis/{m.Groups["id"]}.png"));
